@@ -52,8 +52,12 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
 @RunWith(SpringRunner.class)
-@PropertySource("classpath:application.properties")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { Application.class })
+@SpringBootTest(
+		webEnvironment = WebEnvironment.RANDOM_PORT,
+		classes = { Application.class },
+		properties = {
+				"spring.cloud.gcp.logging.enabled=true",
+		})
 public class LoggingSampleApplicationTests {
 
 	private static final String LOG_FILTER_FORMAT = "resource.type=global AND trace:%s";
