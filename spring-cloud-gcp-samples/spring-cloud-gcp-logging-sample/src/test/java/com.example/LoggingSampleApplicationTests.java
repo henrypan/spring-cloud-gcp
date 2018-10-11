@@ -16,7 +16,6 @@
 
 package com.example;
 
-import com.google.api.gax.core.CredentialsProvider;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -43,6 +42,7 @@ import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,9 +58,6 @@ public class LoggingSampleApplicationTests {
 
 	@Autowired
 	private GcpProjectIdProvider projectIdProvider;
-
-	@Autowired
-	private CredentialsProvider credentialsProvider;
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -80,9 +77,7 @@ public class LoggingSampleApplicationTests {
 
 	@Before
 	public void setupLogging() throws IOException {
-		this.logClient = LoggingOptions.newBuilder()
-				.setCredentials(this.credentialsProvider.getCredentials())
-				.build().getService();
+		this.logClient = LoggingOptions.getDefaultInstance().getService();
 	}
 
 	@Test
@@ -92,7 +87,9 @@ public class LoggingSampleApplicationTests {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("x-cloud-trace-context", traceHeader);
-		this.testRestTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+		ResponseEntity<String> result =
+				this.testRestTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+		assertThat(result.getBody()).isEqualTo("This line was written to the log.");
 
 		String logFilter = String.format(LOG_FILTER_FORMAT, traceHeader);
 
