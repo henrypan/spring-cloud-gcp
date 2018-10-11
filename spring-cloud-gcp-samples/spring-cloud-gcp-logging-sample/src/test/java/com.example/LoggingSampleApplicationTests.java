@@ -39,6 +39,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -51,6 +52,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
 @RunWith(SpringRunner.class)
+@PropertySource("classpath:application.properties")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { Application.class })
 public class LoggingSampleApplicationTests {
 
